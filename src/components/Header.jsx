@@ -1,10 +1,21 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, Droplets, BrainCircuit, LayoutDashboard, LogIn, UserPlus, LogOut } from "lucide-react";
+import { Menu, X, Droplets, BrainCircuit, LayoutDashboard, LogIn, UserPlus, LogOut, Sun, Moon } from "lucide-react";
 import { Button } from "./ui/button.jsx";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet.jsx";
 import { Logo } from "./Logo.jsx";
 import { useAuth } from "../contexts/AuthContext.jsx";
+import { useTheme } from "../contexts/ThemeContext.jsx";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuIndicator,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuViewport,
+} from "@/components/ui/navigation-menu"
 
 const navItems = [
   { href: "/donate", label: "Donate Blood", icon: LayoutDashboard },
@@ -15,11 +26,12 @@ const navItems = [
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
-        <Link to="/" className="flex items-center gap-2">
+        <Link to="/" className="flex items-center gap-1">
           <Logo className="h-7 w-7 text-primary" />
           <h1 className="text-2xl font-bold font-headline text-primary">Raktam</h1>
         </Link>
@@ -34,9 +46,33 @@ export function Header() {
               {item.label}
             </Link>
           ))}
+
+          <NavigationMenu className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger>More</NavigationMenuTrigger>
+                <NavigationMenuContent className="w-6xl">
+                  <div className="flex flex-col gap-1 p-2">
+                    <NavigationMenuLink className="whitespace-nowrap">
+                      <a href="/blood-bank-locator">Blood Bank Locator</a>
+                    </NavigationMenuLink>
+                    <NavigationMenuLink className="whitespace-nowrap">
+                      <a href="/search-blood-availibility">Search Blood Availibility</a>
+                    </NavigationMenuLink>
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+
         </nav>
 
         <div className="hidden md:flex items-center gap-2">
+          <Button variant="ghost" size="icon" onClick={toggleTheme} title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}>
+            {theme === 'light' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+            <span className="sr-only">Toggle theme</span>
+          </Button>
+          
           {isAuthenticated() ? (
             <>
               <Button variant="ghost" asChild>
@@ -75,10 +111,10 @@ export function Header() {
             <SheetContent side="right" className="w-[240px]">
               <div className="flex flex-col h-full">
                 <div className="flex items-center justify-between p-4 border-b">
-                   <Link to="/" className="flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
-                      <Logo className="h-6 w-6 text-primary" />
-                      <span className="font-bold font-headline text-primary">Raktam</span>
-                    </Link>
+                  <Link to="/" className="flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Logo className="h-6 w-6 text-primary" />
+                    <span className="font-bold font-headline text-primary">Raktam</span>
+                  </Link>
                   <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)}>
                     <X className="h-6 w-6" />
                     <span className="sr-only">Close menu</span>
@@ -98,6 +134,11 @@ export function Header() {
                   ))}
                 </nav>
                 <div className="mt-auto p-4 border-t flex flex-col gap-2">
+                  <Button variant="outline" onClick={toggleTheme} className="justify-start">
+                    {theme === 'light' ? <Moon className="mr-2 h-4 w-4" /> : <Sun className="mr-2 h-4 w-4" />}
+                    {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
+                  </Button>
+                  
                   {isAuthenticated() ? (
                     <>
                       <Button variant="outline" asChild>
@@ -116,12 +157,12 @@ export function Header() {
                     <>
                       <Button variant="outline" asChild>
                         <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                           <LogIn className="mr-2 h-4 w-4" /> Login
+                          <LogIn className="mr-2 h-4 w-4" /> Login
                         </Link>
                       </Button>
                       <Button asChild>
                         <Link to="/register" onClick={() => setIsMobileMenuOpen(false)}>
-                           <UserPlus className="mr-2 h-4 w-4" /> Register
+                          <UserPlus className="mr-2 h-4 w-4" /> Register
                         </Link>
                       </Button>
                     </>

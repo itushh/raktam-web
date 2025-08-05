@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../co
 import { Input } from "../components/ui/input.jsx";
 import { Label } from "../components/ui/label.jsx";
 import { useAuth } from "../contexts/AuthContext.jsx";
+import { getApiEndpoint } from "../config/env.js";
 
 export function Register() {
   const [formData, setFormData] = useState({
@@ -96,7 +97,7 @@ export function Register() {
     setIsSubmitting(true);
     
     try {
-      const response = await fetch('https://raktam-api.onrender.com/api/auth/register', {
+      const response = await fetch(getApiEndpoint('/api/auth/register'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

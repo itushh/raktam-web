@@ -1,24 +1,24 @@
 import { Link } from "react-router-dom";
 import { Button } from "../components/ui/button.jsx";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card.jsx";
-import { ArrowRight, Heart, Users, BrainCircuit, BotMessageSquare, Stethoscope, Target } from "lucide-react";
+import { ArrowRight, Heart, Users, BrainCircuit, BotMessageSquare, Stethoscope, Target, HandHelping, Bot, HeartHandshake, Droplet } from "lucide-react";
 
 export function Home() {
   const features = [
     {
-      icon: <Users className="h-8 w-8 text-primary" />,
+      icon: <img src="/donate-blood.svg" />,
       title: "Become a Donor",
       description: "Join our community of heroes and save lives with your donation.",
       link: "/register",
     },
     {
-      icon: <BrainCircuit className="h-8 w-8 text-primary" />,
+      icon: <img className="p-2.5" src="raktam-ai.svg" />,
       title: "Raktam AI",
       description: "Get personalized AI insights for your blood health and well-being.",
       link: "/raktam-ai",
     },
     {
-      icon: <Heart className="h-8 w-8 text-primary" />,
+      icon: <img src="/blood-cells.svg" />,
       title: "Request Blood",
       description: "Quickly connect with voluntary blood donors in your area.",
       link: "/request-blood",
@@ -145,7 +145,7 @@ export function Home() {
             </div>
             <div className="flex justify-center items-center">
               <div className="w-96 h-96 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-lg flex items-center justify-center">
-                <BrainCircuit className="h-32 w-32 text-primary" />
+                <img src="/raktam-bot.svg" />
               </div>
             </div>
           </div>

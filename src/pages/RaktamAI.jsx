@@ -5,10 +5,10 @@ import { ArrowRight, BrainCircuit, Stethoscope, Target } from "lucide-react";
 const aiTools = [
     {
         icon: <BrainCircuit className="h-10 w-10 text-primary" />,
-        title: "Blood Test Insights",
-        description: "Analyze and get insights about your blood test results.",
-        link: "/ai/blood-test-insights",
-        badge: "Insights",
+        title: "Blood Report Analysis",
+        description: "Upload your blood test report and get AI-powered insights, analysis, and personalized recommendations.",
+        link: "/ai/blood-report-analysis",
+        badge: "New",
     },
     {
         icon: <Stethoscope className="h-10 w-10 text-primary" />,
