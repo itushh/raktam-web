@@ -11,10 +11,9 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState('dark');
 
   useEffect(() => {
-    // Check if user has a saved preference
     const savedTheme = localStorage.getItem('theme');
     
     if (savedTheme) {
@@ -24,28 +23,6 @@ export const ThemeProvider = ({ children }) => {
       } else {
         document.documentElement.classList.remove('dark');
       }
-    } else {
-      // Auto-detect system theme
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      
-      const handleSystemThemeChange = (e) => {
-        const newTheme = e.matches ? 'dark' : 'light';
-        setTheme(newTheme);
-        if (newTheme === 'dark') {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
-      };
-
-      // Set initial theme based on system preference
-      handleSystemThemeChange(mediaQuery);
-
-      // Listen for system theme changes
-      mediaQuery.addEventListener('change', handleSystemThemeChange);
-
-      // Cleanup listener on unmount
-      return () => mediaQuery.removeEventListener('change', handleSystemThemeChange);
     }
   }, []);
 

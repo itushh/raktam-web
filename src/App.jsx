@@ -22,7 +22,7 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <Router>
-          <div className="flex min-h-screen flex-col font-body antialiased">
+          <div className="flex h-screen flex-col font-body antialiased overflow-auto" style={{ backgroundImage: 'url("/background-transparent.svg")', backgroundSize: 'cover' }}>
             <Header />
             <main className="flex-1">
               <Routes>

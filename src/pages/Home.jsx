@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "../components/ui/button.jsx";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card.jsx";
-import { ArrowRight, Heart, Users, BrainCircuit, BotMessageSquare, Stethoscope, Target, HandHelping, Bot, HeartHandshake, Droplet } from "lucide-react";
+import { ArrowRight, Brain, Heart, Users, BrainCircuit, BotMessageSquare, Stethoscope, Target, HandHelping, Bot, HeartHandshake, Droplet } from "lucide-react";
 
 export function Home() {
   const features = [
@@ -12,7 +12,7 @@ export function Home() {
       link: "/register",
     },
     {
-      icon: <img className="p-2.5" src="raktam-ai.svg" />,
+      icon: <Brain size={40} />,
       title: "Raktam AI",
       description: "Get personalized AI insights for your blood health and well-being.",
       link: "/raktam-ai",
@@ -65,7 +65,7 @@ export function Home() {
     <div className="flex flex-col">
 
       {/* Hero Section */}
-      <section className="py-20 md:py-32 bg-secondary">
+      <section className="py-20 md:py-32">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-6xl font-extrabold font-headline text-primary mb-4">Connect. Donate. Save Lives.</h2>
           <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground mb-8">Raktam Connect is a modern platform for blood donation, enhanced with AI to help you manage your blood health intelligently.</p>
@@ -98,7 +98,7 @@ export function Home() {
       </section>
 
       {/* How it Works */}
-      <section id="how-it-works" className="py-16 md:py-24 bg-secondary">
+      <section id="how-it-works" className="py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h3 className="text-3xl md:text-4xl font-bold font-headline text-primary">How It Works</h3>
@@ -153,7 +153,7 @@ export function Home() {
       </section>
 
       {/* Our Mission */}
-      <section id="mission" className="py-16 md:py-24 bg-secondary">
+      <section id="mission" className="py-16 md:py-24">
         <div className="container mx-auto px-4 text-center">
           <div className="mx-auto bg-primary/10 rounded-full h-20 w-20 flex items-center justify-center mb-4">
             <Target className="h-10 w-10 text-primary" />
