@@ -4,6 +4,7 @@ import { Footer } from './components/Footer.jsx';
 import { Home } from './pages/Home.jsx';
 import { Login } from './pages/Login.jsx';
 import { Register } from './pages/Register.jsx';
+import { BecomeDonor } from './pages/BecomeDonor.jsx';
 import { Dashboard } from './pages/Dashboard.jsx';
 import { RequestBlood } from './pages/RequestBlood.jsx';
 import { RaktamAI } from './pages/RaktamAI.jsx';
@@ -29,6 +30,11 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/become-donor" element={
+                  <ProtectedRoute>
+                    <BecomeDonor />
+                  </ProtectedRoute>
+                } />
                 <Route path="/dashboard" element={
                   <ProtectedRoute>
                     <Dashboard />

@@ -4,7 +4,7 @@ const getApiUrl = () => {
   if (isDevelopment) {
     return 'http://localhost:3000';
   } else {
-    return 'https://rakram-api.onrender.com';
+    return 'https://raktam-api.onrender.com';
   }
 };
 

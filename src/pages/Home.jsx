@@ -9,7 +9,7 @@ export function Home() {
       icon: <img src="/donate-blood.svg" />,
       title: "Become a Donor",
       description: "Join our community of heroes and save lives with your donation.",
-      link: "/register",
+      link: "/become-donor",
     },
     {
       icon: <Brain size={40} />,
@@ -71,7 +71,7 @@ export function Home() {
           <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground mb-8">Raktam Connect is a modern platform for blood donation, enhanced with AI to help you manage your blood health intelligently.</p>
           <div className="flex justify-center gap-4">
             <Button size="lg" asChild><Link to="/request-blood">Request Blood <ArrowRight className="ml-2 h-5 w-5" /></Link></Button>
-            <Button size="lg" variant="outline" asChild><Link to="/register">Become a Donor</Link></Button>
+            <Button size="lg" variant="outline" asChild><Link to="/become-donor">Become a Donor</Link></Button>
           </div>
         </div>
       </section>

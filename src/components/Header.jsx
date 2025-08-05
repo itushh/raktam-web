@@ -18,9 +18,9 @@ import {
 } from "@/components/ui/navigation-menu"
 
 const navItems = [
-  { href: "/donate", label: "Donate Blood", icon: LayoutDashboard },
+  { href: "/become-donor", label: "Donate Blood", icon: LayoutDashboard },
   { href: "/raktam-ai", label: "Raktam AI", icon: BrainCircuit },
-  { href: "/request", label: "Need Blood ?", icon: Droplets },
+  { href: "/request", label: "Request Blood", icon: Droplets },
 ];
 
 export function Header() {
@@ -141,6 +141,11 @@ export function Header() {
                   
                   {isAuthenticated() ? (
                     <>
+                      <Button variant="outline" asChild>
+                        <Link to="/become-donor" onClick={() => setIsMobileMenuOpen(false)}>
+                          <Droplets className="mr-2 h-4 w-4" /> Become Donor
+                        </Link>
+                      </Button>
                       <Button variant="outline" asChild>
                         <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
                           <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
