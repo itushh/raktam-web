@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../..
 import { Label } from "../../components/ui/label.jsx";
 import { Loader2, Upload, FileText, AlertCircle, CheckCircle, TrendingUp, TrendingDown, Activity } from "lucide-react";
 import { getApiEndpoint } from "../../config/env.js";
+import toast from "react-hot-toast";
 
 export function BloodReportAnalysis() {
     const [selectedFile, setSelectedFile] = useState(null);
@@ -80,55 +81,13 @@ export function BloodReportAnalysis() {
             const result = await response.json();
 
             if (result.success) {
-                const mockAnalysis = {
-                    fileName: result.data.fileName,
-                    extractedText: result.data.text,
-                    pages: result.data.pages,
-                    overallHealth: "Good",
-                    riskLevel: "Low",
-                    parameters: [
-                        {
-                            name: "Hemoglobin",
-                            value: "14.2 g/dL",
-                            normalRange: "12.0-15.5 g/dL",
-                            status: "normal",
-                            trend: "stable"
-                        },
-                        {
-                            name: "White Blood Cells",
-                            value: "7.5 × 10³/μL",
-                            normalRange: "4.5-11.0 × 10³/μL",
-                            status: "normal",
-                            trend: "stable"
-                        },
-                        {
-                            name: "Platelets",
-                            value: "250 × 10³/μL",
-                            normalRange: "150-450 × 10³/μL",
-                            status: "normal",
-                            trend: "stable"
-                        }
-                    ],
-                    insights: [
-                        "Your blood parameters are within normal ranges",
-                        "Good hemoglobin levels indicate adequate oxygen transport",
-                        "White blood cell count suggests a healthy immune system"
-                    ],
-                    recommendations: [
-                        "Continue maintaining a balanced diet rich in iron",
-                        "Stay hydrated and exercise regularly",
-                        "Monitor your blood pressure regularly"
-                    ],
-                    warnings: []
-                };
-
-                setAnalysis(mockAnalysis);
+                setAnalysis(result.data);
             } else {
                 throw new Error(result.message || 'Analysis failed');
             }
         } catch (error) {
             console.error("Blood report analysis error:", error);
-            alert(`Failed to analyze blood report: ${error.message}`);
+            toast(error.message, { type: "error" });
         } finally {
             setIsLoading(false);
         }
@@ -160,14 +119,40 @@ export function BloodReportAnalysis() {
         }
     };
 
+    const getRiskColor = (risk) => {
+        switch (risk?.toLowerCase()) {
+            case "low":
+                return "text-green-600";
+            case "medium":
+                return "text-orange-600";
+            case "high":
+                return "text-red-600";
+            default:
+                return "text-gray-600";
+        }
+    };
+
+    const getHealthColor = (health) => {
+        switch (health?.toLowerCase()) {
+            case "good":
+                return "text-green-600";
+            case "moderate":
+                return "text-orange-600";
+            case "poor":
+                return "text-red-600";
+            default:
+                return "text-gray-600";
+        }
+    };
+
     return (
         <div className="container mx-auto max-w-6xl p-4 md:p-8">
             <div className="text-center mb-8">
                 <h1 className="text-4xl font-bold font-headline text-primary">
-                    Blood Report AI Analysis
+                    Medical Report AI Analysis
                 </h1>
                 <p className="text-muted-foreground mt-2">
-                    Upload your blood test report and get AI-powered insights, analysis, and personalized recommendations.
+                    Upload your medical test report and get AI-powered insights, analysis, and personalized recommendations.
                 </p>
             </div>
 
@@ -175,16 +160,16 @@ export function BloodReportAnalysis() {
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                         <FileText className="h-5 w-5" />
-                        Upload Blood Report
+                        Upload Medical Report
                     </CardTitle>
                     <CardDescription>
-                        Upload a PDF of your blood test report. Our AI will extract and analyze the text content to provide detailed insights.
+                        Upload a PDF of your medical test report. Our AI will analyze it to provide detailed insights.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div>
-                            <Label htmlFor="file-upload">Blood Report File</Label>
+                            <Label htmlFor="file-upload">Medical Report File</Label>
                             <div
                                 className={`mt-2 border-2 border-dashed rounded-lg p-8 text-center transition-colors ${dragActive
                                         ? "border-primary bg-primary/5"
@@ -209,7 +194,7 @@ export function BloodReportAnalysis() {
                                         <Upload className="mx-auto h-12 w-12 text-muted-foreground" />
                                         <div>
                                             <p className="text-lg font-medium">
-                                                Drop your blood report here, or{" "}
+                                                Drop your medical report here, or{" "}
                                                 <button
                                                     type="button"
                                                     className="text-primary hover:underline"
@@ -252,13 +237,12 @@ export function BloodReportAnalysis() {
                         <Button type="submit" disabled={isLoading || !selectedFile} className="w-full">
                             {isLoading ? (
                                 <>
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                     Analyzing Report...
                                 </>
                             ) : (
                                 <>
                                     <FileText className="mr-2 h-4 w-4" />
-                                    Analyze Blood Report
+                                    Analyze Medical Report
                                 </>
                             )}
                         </Button>
@@ -269,7 +253,7 @@ export function BloodReportAnalysis() {
             {isLoading && (
                 <div className="mt-8 text-center">
                     <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary mb-2" />
-                    <p className="text-muted-foreground">Our AI is analyzing your blood report...</p>
+                    <p className="text-muted-foreground">Our AI is analyzing your medical report...</p>
                 </div>
             )}
 
@@ -286,35 +270,41 @@ export function BloodReportAnalysis() {
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div className="text-center p-4 bg-secondary rounded-lg">
                                     <p className="text-sm text-muted-foreground">Overall Health</p>
-                                    <p className="text-2xl font-bold text-primary">{analysis.overallHealth}</p>
+                                    <p className={`text-2xl font-bold ${getHealthColor(analysis.analysis?.AI_insights?.overallHealth)}`}>
+                                        {analysis.analysis?.AI_insights?.overallHealth || 'N/A'}
+                                    </p>
                                 </div>
                                 <div className="text-center p-4 bg-secondary rounded-lg">
                                     <p className="text-sm text-muted-foreground">Risk Level</p>
-                                    <p className="text-2xl font-bold text-primary">{analysis.riskLevel}</p>
+                                    <p className={`text-2xl font-bold ${getRiskColor(analysis.analysis?.AI_insights?.risk)}`}>
+                                        {analysis.analysis?.AI_insights?.risk || 'N/A'}
+                                    </p>
                                 </div>
                                 <div className="text-center p-4 bg-secondary rounded-lg">
                                     <p className="text-sm text-muted-foreground">Parameters Analyzed</p>
-                                    <p className="text-2xl font-bold text-primary">{analysis.parameters.length}</p>
+                                    <p className="text-2xl font-bold text-primary">
+                                        {Object.keys(analysis.analysis?.components || {}).length}
+                                    </p>
                                 </div>
                             </div>
                         </CardContent>
                     </Card>
 
-                    <Card className="">
+                    <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <FileText className="h-5 w-5" />
-                                Extracted PDF Text
+                                AI Summary
                             </CardTitle>
                             <CardDescription>
-                                Raw text extracted from your blood report PDF ({analysis.pages} pages)
+                                AI-generated summary of your medical report
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <div className="bg-muted p-4 rounded-lg max-h-64 overflow-y-auto">
-                                <pre className="text-sm whitespace-pre-wrap font-mono">
-                                    {analysis.extractedText}
-                                </pre>
+                            <div className="bg-muted p-4 rounded-lg">
+                                <p className="text-sm leading-relaxed">
+                                    {analysis.analysis?.AI_insights?.summary || 'No summary available'}
+                                </p>
                             </div>
                         </CardContent>
                     </Card>
@@ -325,21 +315,21 @@ export function BloodReportAnalysis() {
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-4">
-                                {analysis.parameters.map((param, index) => (
+                                {analysis.analysis?.components && Object.entries(analysis.analysis.components).map(([paramName, paramData], index) => (
                                     <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
                                         <div className="flex items-center gap-3">
-                                            {getStatusIcon(param.status)}
+                                            {getStatusIcon(paramData.status)}
                                             <div>
-                                                <p className="font-medium">{param.name}</p>
+                                                <p className="font-medium">{paramName}</p>
                                                 <p className="text-sm text-muted-foreground">
-                                                    Normal range: {param.normalRange}
+                                                    Normal range: {paramData.normalRange}
                                                 </p>
                                             </div>
                                         </div>
                                         <div className="text-right">
-                                            <p className="font-bold">{param.value}</p>
-                                            <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(param.status)}`}>
-                                                {param.status.toUpperCase()}
+                                            <p className="font-bold">{paramData.value}</p>
+                                            <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(paramData.status)}`}>
+                                                {paramData.status?.toUpperCase() || 'UNKNOWN'}
                                             </span>
                                         </div>
                                     </div>
@@ -358,12 +348,14 @@ export function BloodReportAnalysis() {
                             </CardHeader>
                             <CardContent>
                                 <ul className="space-y-2">
-                                    {analysis.insights.map((insight, index) => (
+                                    {analysis.analysis?.AI_insights?.keyInsights?.map((insight, index) => (
                                         <li key={index} className="flex items-start gap-2">
                                             <span className="text-green-500 mt-1">•</span>
                                             <span>{insight}</span>
                                         </li>
-                                    ))}
+                                    )) || (
+                                        <li className="text-muted-foreground">No insights available</li>
+                                    )}
                                 </ul>
                             </CardContent>
                         </Card>
@@ -377,12 +369,14 @@ export function BloodReportAnalysis() {
                             </CardHeader>
                             <CardContent>
                                 <ul className="space-y-2">
-                                    {analysis.recommendations.map((rec, index) => (
+                                    {analysis.analysis?.AI_insights?.recommendations?.map((rec, index) => (
                                         <li key={index} className="flex items-start gap-2">
                                             <span className="text-blue-500 mt-1">•</span>
                                             <span>{rec}</span>
                                         </li>
-                                    ))}
+                                    )) || (
+                                        <li className="text-muted-foreground">No recommendations available</li>
+                                    )}
                                 </ul>
                             </CardContent>
                         </Card>

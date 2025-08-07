@@ -5,17 +5,21 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../co
 import { Input } from "../components/ui/input.jsx";
 import { Label } from "../components/ui/label.jsx";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select.jsx";
+import { Checkbox } from "../components/ui/checkbox.jsx";
 import { useAuth } from "../contexts/AuthContext.jsx";
 import { getApiEndpoint } from "../config/env.js";
+import { Calendar } from "../components/ui/calendar.jsx";
+import { Popover, PopoverContent, PopoverTrigger } from "../components/ui/popover.jsx";
+import { ChevronDownIcon } from "lucide-react";
 
 export function BecomeDonor() {
   const [formData, setFormData] = useState({
-    dateOfBirth: '',
+    dateOfBirth: null,
     bloodGroup: '',
     mobileNumber: '',
     address: '',
     donatedBefore: false,
-    dateDonated: '',
+    dateDonated: null,
     willingToDonateInEmergency: false,
     willingToBeCalledForCamps: false
   });
@@ -24,6 +28,8 @@ export function BecomeDonor() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isDobPickerOpen, setIsDobPickerOpen] = useState(false);
+  const [isDonatedDatePickerOpen, setIsDonatedDatePickerOpen] = useState(false);
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
@@ -49,12 +55,12 @@ export function BecomeDonor() {
       if (response.ok) {
         const data = await response.json();
         setFormData({
-          dateOfBirth: data.donor.dateOfBirth ? new Date(data.donor.dateOfBirth).toISOString().split('T')[0] : '',
+          dateOfBirth: data.donor.dateOfBirth ? new Date(data.donor.dateOfBirth) : null,
           bloodGroup: data.donor.bloodGroup || '',
           mobileNumber: data.donor.mobileNumber || '',
           address: data.donor.address || '',
           donatedBefore: data.donor.donatedBefore || false,
-          dateDonated: data.donor.dateDonated ? new Date(data.donor.dateDonated).toISOString().split('T')[0] : '',
+          dateDonated: data.donor.dateDonated ? new Date(data.donor.dateDonated) : null,
           willingToDonateInEmergency: data.donor.willingToDonateInEmergency || false,
           willingToBeCalledForCamps: data.donor.willingToBeCalledForCamps || false
         });
@@ -68,12 +74,32 @@ export function BecomeDonor() {
   };
 
   const handleInputChange = (e) => {
-    const { id, value, type, checked } = e.target;
+    const { id, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [id]: type === 'checkbox' ? checked : value
+      [id]: value
     }));
     // Clear error when user starts typing
+    if (errors[id]) {
+      setErrors(prev => ({
+        ...prev,
+        [id]: ''
+      }));
+    }
+  };
+
+  const handleCheckboxChange = (id, checked) => {
+    setFormData(prev => ({
+      ...prev,
+      [id]: checked
+    }));
+  };
+
+  const handleDateChange = (id, date) => {
+    setFormData(prev => ({
+      ...prev,
+      [id]: date
+    }));
     if (errors[id]) {
       setErrors(prev => ({
         ...prev,
@@ -160,14 +186,8 @@ export function BecomeDonor() {
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          dateOfBirth: formData.dateOfBirth,
-          bloodGroup: formData.bloodGroup,
-          mobileNumber: formData.mobileNumber,
-          address: formData.address,
-          donatedBefore: formData.donatedBefore,
+          ...formData,
           dateDonated: formData.donatedBefore ? formData.dateDonated : undefined,
-          willingToDonateInEmergency: formData.willingToDonateInEmergency,
-          willingToBeCalledForCamps: formData.willingToBeCalledForCamps
         }),
       });
 
@@ -176,12 +196,12 @@ export function BecomeDonor() {
       if (response.ok) {
         // Reset form after successful submission
         setFormData({
-          dateOfBirth: '',
+          dateOfBirth: null,
           bloodGroup: '',
           mobileNumber: '',
           address: '',
           donatedBefore: false,
-          dateDonated: '',
+          dateDonated: null,
           willingToDonateInEmergency: false,
           willingToBeCalledForCamps: false
         });
@@ -234,13 +254,29 @@ export function BecomeDonor() {
             
             <div className="grid gap-2">
               <Label htmlFor="dateOfBirth">Date of Birth</Label>
-              <Input 
-                id="dateOfBirth" 
-                type="date" 
-                value={formData.dateOfBirth}
-                onChange={handleInputChange}
-                className={errors.dateOfBirth ? "border-red-500" : ""}
-              />
+              <Popover open={isDobPickerOpen} onOpenChange={setIsDobPickerOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    id="dateOfBirth"
+                    className={`w-full justify-between font-normal ${errors.dateOfBirth ? "border-red-500" : ""}`}
+                  >
+                    {formData.dateOfBirth ? formData.dateOfBirth.toLocaleDateString() : "Select date"}
+                    <ChevronDownIcon />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={formData.dateOfBirth}
+                    captionLayout="dropdown"
+                    onSelect={(date) => {
+                      handleDateChange('dateOfBirth', date);
+                      setIsDobPickerOpen(false);
+                    }}
+                  />
+                </PopoverContent>
+              </Popover>
               {errors.dateOfBirth && (
                 <p className="text-sm text-red-500">{errors.dateOfBirth}</p>
               )}
@@ -249,7 +285,7 @@ export function BecomeDonor() {
             <div className="grid gap-2">
               <Label htmlFor="bloodGroup">Blood Group</Label>
               <Select value={formData.bloodGroup} onValueChange={(value) => handleSelectChange('bloodGroup', value)}>
-                <SelectTrigger className={errors.bloodGroup ? "border-red-500" : ""}>
+                <SelectTrigger className={`w-full ${errors.bloodGroup ? "border-red-500" : ""}`}>
                   <SelectValue placeholder="Select blood group" />
                 </SelectTrigger>
                 <SelectContent>
@@ -298,12 +334,10 @@ export function BecomeDonor() {
             </div>
 
             <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
+              <Checkbox
                 id="donatedBefore"
                 checked={formData.donatedBefore}
-                onChange={handleInputChange}
-                className="rounded border-gray-300"
+                onCheckedChange={(checked) => handleCheckboxChange('donatedBefore', checked)}
               />
               <Label htmlFor="donatedBefore">Have you donated blood before?</Label>
             </div>
@@ -311,13 +345,28 @@ export function BecomeDonor() {
             {formData.donatedBefore && (
               <div className="grid gap-2">
                 <Label htmlFor="dateDonated">Date of Last Donation</Label>
-                <Input 
-                  id="dateDonated" 
-                  type="date" 
-                  value={formData.dateDonated}
-                  onChange={handleInputChange}
-                  className={errors.dateDonated ? "border-red-500" : ""}
-                />
+                <Popover open={isDonatedDatePickerOpen} onOpenChange={setIsDonatedDatePickerOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      id="dateDonated"
+                      className={`w-full justify-between font-normal ${errors.dateDonated ? "border-red-500" : ""}`}
+                    >
+                      {formData.dateDonated ? formData.dateDonated.toLocaleDateString() : "Select date"}
+                      <ChevronDownIcon />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={formData.dateDonated}
+                      onSelect={(date) => {
+                        handleDateChange('dateDonated', date);
+                        setIsDonatedDatePickerOpen(false);
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
                 {errors.dateDonated && (
                   <p className="text-sm text-red-500">{errors.dateDonated}</p>
                 )}
@@ -325,23 +374,19 @@ export function BecomeDonor() {
             )}
 
             <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
+              <Checkbox
                 id="willingToDonateInEmergency"
                 checked={formData.willingToDonateInEmergency}
-                onChange={handleInputChange}
-                className="rounded border-gray-300"
+                onCheckedChange={(checked) => handleCheckboxChange('willingToDonateInEmergency', checked)}
               />
               <Label htmlFor="willingToDonateInEmergency">Willing to donate in emergency situations?</Label>
             </div>
 
             <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
+              <Checkbox
                 id="willingToBeCalledForCamps"
                 checked={formData.willingToBeCalledForCamps}
-                onChange={handleInputChange}
-                className="rounded border-gray-300"
+                onCheckedChange={(checked) => handleCheckboxChange('willingToBeCalledForCamps', checked)}
               />
               <Label htmlFor="willingToBeCalledForCamps">Would you like to be called for donation camps?</Label>
             </div>
@@ -357,4 +402,5 @@ export function BecomeDonor() {
       </Card>
     </div>
   );
-} 
+}
+ 

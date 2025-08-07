@@ -15,12 +15,14 @@ import { UnderConstruction } from './pages/UnderConstruction.jsx';
 import { AuthProvider } from './contexts/AuthContext.jsx';
 import { ThemeProvider } from './contexts/ThemeContext.jsx';
 import { ProtectedRoute } from './components/ProtectedRoute.jsx';
-import './index.css';
 import BloodBankLocator from './pages/BloodBankLocator.jsx';
+import './index.css';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
     <ThemeProvider>
+      <Toaster />
       <AuthProvider>
         <Router>
           <div className="flex h-screen flex-col font-body antialiased overflow-auto" style={{ backgroundImage: 'url("/background-transparent.svg")', backgroundSize: 'cover' }}>
@@ -41,11 +43,11 @@ function App() {
                   </ProtectedRoute>
                 } />
                 <Route path="/request-blood-xyz" element={<RequestBlood />} />
-                              <Route path="/raktam-ai" element={<RaktamAI />} />
-              <Route path="/blood-bank-locator" element={<BloodBankLocator />} />
-              <Route path="/ai/blood-report-analysis" element={<BloodReportAnalysis />} />
-              <Route path="/ai/cure-disease" element={<CureDisease />} />
-              <Route path="/ai/health-track" element={<HealthTrack />} />
+                <Route path="/raktam-ai" element={<RaktamAI />} />
+                <Route path="/blood-bank-locator" element={<BloodBankLocator />} />
+                <Route path="/ai/blood-report-analysis" element={<BloodReportAnalysis />} />
+                <Route path="/ai/cure-disease" element={<CureDisease />} />
+                <Route path="/ai/health-track" element={<HealthTrack />} />
                 <Route path="*" element={<UnderConstruction />} />
               </Routes>
             </main>
