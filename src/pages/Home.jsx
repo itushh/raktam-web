@@ -77,7 +77,7 @@ export function Home() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-16 md:py-24">
+      <section id="features" className="py-16 md:py-24 lg:px-20">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8">
             {features.map((feature, index) => (
