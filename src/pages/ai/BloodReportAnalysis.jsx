@@ -311,7 +311,7 @@ export function BloodReportAnalysis() {
 
                     <Card>
                         <CardHeader>
-                            <CardTitle>Blood Parameters Analysis</CardTitle>
+                            <CardTitle>Parameters Analysis</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-4">
