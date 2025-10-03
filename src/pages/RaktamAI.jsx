@@ -5,24 +5,24 @@ import { ArrowRight, BrainCircuit, Stethoscope, Target } from "lucide-react";
 const aiTools = [
     {
         icon: <BrainCircuit className="h-10 w-10 text-primary" />,
-        title: "Blood Report Analysis",
+        title: "Blood Report Analyser",
         description: "Upload your blood test report and get AI-powered insights, analysis, and personalized recommendations.",
         link: "/ai/blood-report-analysis",
         badge: "New",
     },
     {
         icon: <Stethoscope className="h-10 w-10 text-primary" />,
-        title: "Blood Disease Awareness",
-        description: "Get AI-powered informational recommendations and lifestyle adjustments for managing blood diseases.",
+        title: "AI Lifestyle Analyser",
+        description: "Get AI-powered informational recommendations and lifestyle adjustments for health lifestyle.",
         link: "/ai/cure-disease-awareness",
-        badge: "Education",
+        badge: "New",
     },
     {
         icon: <Target className="h-10 w-10 text-primary" />,
-        title: "Blood Health Booster",
+        title: "AI chatbot to resolve medical queris.",
         description: "Receive tailored diet, exercise, and lifestyle tips based on your unique health profile to improve blood health.",
         link: "/ai/health-booster",
-        badge: "Health",
+        badge: "New",
     },
 ];
 
